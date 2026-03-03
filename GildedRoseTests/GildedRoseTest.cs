@@ -84,6 +84,23 @@ public class GildedRoseTest
         Assert.InRange(Items[0].Quality, 0, 50);
     }
 
+    [Theory]
+    [InlineData(0, 80)]
+    [InlineData(-5, 80)]
+    [InlineData(10, 80)]
+    public void Sulfuras(int sellIn, int quality)
+    {
+        IList<Item> Items = new List<Item> { new Item { Name = "Sulfuras, Hand of Ragnaros", SellIn = sellIn, Quality = quality } };
+        GildedRose app = new GildedRose(Items);
+        
+        app.UpdateQuality();
+
+        Assert.Equal(sellIn, Items[0].SellIn);
+        Assert.Equal(quality, Items[0].Quality);
+        Assert.Equal(80, Items[0].Quality);
+    }
+
+
 
 
 
