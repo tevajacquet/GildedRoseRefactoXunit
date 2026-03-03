@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GildedRoseKata;
 
@@ -11,6 +12,7 @@ public class GildedRose
         this.Items = Items;
     }
 
+    [Obsolete("Ancien code à ne plus utiliser : logique inverser + trop de if imbriqué + difficile à maintenir")]
     public void UpdateQuality()
     {
         for (var i = 0; i < Items.Count; i++)
