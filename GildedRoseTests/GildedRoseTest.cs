@@ -32,7 +32,9 @@ public class GildedRoseTest
     {
         IList<Item> Items = new List<Item> { new Item { Name = "foo", SellIn = 1, Quality = 10 } };
         GildedRose app = new GildedRose(Items);
+
         app.UpdateQuality();
+
         Assert.Equal(0, Items[0].SellIn);
         Assert.Equal(9, Items[0].Quality);
     }
@@ -42,10 +44,50 @@ public class GildedRoseTest
     {
         IList<Item> Items = new List<Item> { new Item { Name = "foo", SellIn = 0, Quality = 10 } };
         GildedRose app = new GildedRose(Items);
+
         app.UpdateQuality();
+
         Assert.Equal(-1, Items[0].SellIn);
         Assert.Equal(8, Items[0].Quality);
     }
+
+    [Fact]
+    public void ArticleNormalQualiteZero()
+    {
+        IList<Item> Items = new List<Item> { new Item { Name = "foo", SellIn = 1, Quality = 0 } };
+        GildedRose app = new GildedRose(Items);
+
+        app.UpdateQuality();
+
+        Assert.Equal(0, Items[0].SellIn);
+        Assert.Equal(0, Items[0].Quality);
+    }
+
+    //Aged Brie : sellin = 0, quality = 10 => après update : sellin = -1, quality = 12 si expiré sinon quality = 11
+    //Aged Brie : sellin = 5, quality = 49 => après update : sellin = 4, quality = 50
+    //Aged Brie : sellin = 5, quality = 50 => après update : sellin = 4, quality = 50
+    [Theory]
+    [InlineData(0, 10, -1, 12)]
+    [InlineData(-1, 10, -2, 12)]
+    [InlineData(5, 49, 4, 50)]
+    [InlineData(5, 50, 4, 50)]
+    [InlineData(0, 50, -1, 50)]
+    public void AgedBrie(int sellIn, int quality, int sellInAttendu, int qualityAttendu)
+    {
+        IList<Item> Items = new List<Item> { new Item { Name = "Aged Brie", SellIn = sellIn, Quality = quality } };
+        GildedRose app = new GildedRose(Items);
+        
+        app.UpdateQuality();
+
+        Assert.Equal(sellInAttendu, Items[0].SellIn);
+        Assert.Equal(qualityAttendu, Items[0].Quality);
+        Assert.InRange(Items[0].Quality, 0, 50);
+    }
+
+
+
+
+
 
 
 }
