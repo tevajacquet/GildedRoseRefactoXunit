@@ -26,4 +26,49 @@ public class GildedRoseTest
     //Cas pour tous tester les limite (0 et 50) pour pas avoir comportement bizarre
 
 
+    //Article normal : sellin = 1, quality = 10 => après update : sellin = 0, quality = 9
+    [Fact]
+    public void ArticleNormalSellinPositif()
+    {
+        IList<Item> Items = new List<Item> { new Item { Name = "foo", SellIn = 1, Quality = 10 } };
+        GildedRose app = new GildedRose(Items);
+        app.UpdateQuality();
+        Assert.Equal(0, Items[0].SellIn);
+        Assert.Equal(9, Items[0].Quality);
+    }
+
+    [Fact]
+    public void ArticleNormalSellInNegatif()
+    {
+        IList<Item> Items = new List<Item> { new Item { Name = "foo", SellIn = 0, Quality = 10 } };
+        GildedRose app = new GildedRose(Items);
+        app.UpdateQuality();
+        Assert.Equal(-1, Items[0].SellIn);
+        Assert.Equal(8, Items[0].Quality);
+    }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
