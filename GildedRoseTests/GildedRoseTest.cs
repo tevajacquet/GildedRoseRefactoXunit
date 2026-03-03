@@ -133,9 +133,24 @@ public class GildedRoseTest
         Assert.InRange(item.Quality, 0, 50);
     }
 
-    public void Conjured()
+    //Cas 6 : Conjured diminue de 2 la qualité si sellin >= 0 et de 4 si sellin < 0 (par contre qualité ne peut pas être négative)
+    [Theory]
+    [InlineData(3, 10, 2, 8)]
+    [InlineData(1, 10, 0, 8)]
+    [InlineData(1, 1, 0, 0)]
+
+    [InlineData(0, 10, -1, 6)]
+    [InlineData(-1, 10, -2, 6)]
+    [InlineData(0, 3, -1, 0)]
+    public void Conjured(int sellIn, int quality, int sellInAttendu, int qualityAttendu)
     {
-        //TODO
+        var (app, item) = InitAppTestAvecUnItem(ConjuredConst, sellIn, quality);
+
+        app.UpdateQuality();
+
+        Assert.Equal(sellInAttendu, item.SellIn);
+        Assert.Equal(qualityAttendu, item.Quality);
+        Assert.InRange(item.Quality, 0, 50);
     }
 
 
