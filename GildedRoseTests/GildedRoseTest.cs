@@ -6,6 +6,11 @@ namespace GildedRoseTests;
 
 public class GildedRoseTest
 {
+    public const string AgedBrieConst = "Aged Brie";
+    public const string BackStageConst = "Backstage passes to a TAFKAL80ETC concert";
+    public const string SulfurasConst = "Sulfuras, Hand of Ragnaros";
+    public const string ConjuredConst = "Conjured Mana Cake";
+
     [Fact]
     public void foo()
     {
@@ -25,42 +30,46 @@ public class GildedRoseTest
     //Cas 7 : tous les articles ne peuvent pas avoir une qualité négative ni supérieure à 50 (sauf Sulfuras qui a une qualité de 80)
     //Cas pour tous tester les limite (0 et 50) pour pas avoir comportement bizarre
 
+    private static (GildedRose app, Item item) InitAppTestAvecUnItem(string name, int sellIn, int quality)
+    {
+        var item = new Item { Name = name, SellIn = sellIn, Quality = quality };
+        var app = new GildedRose(new List<Item> { item });
+        return (app, item);
+    }
 
     //Article normal : sellin = 1, quality = 10 => après update : sellin = 0, quality = 9
     [Fact]
     public void ArticleNormalSellinPositif()
     {
-        IList<Item> Items = new List<Item> { new Item { Name = "foo", SellIn = 1, Quality = 10 } };
-        GildedRose app = new GildedRose(Items);
+        var (app, item) = InitAppTestAvecUnItem("foo", 1, 10);
 
         app.UpdateQuality();
 
-        Assert.Equal(0, Items[0].SellIn);
-        Assert.Equal(9, Items[0].Quality);
+        Assert.Equal(0, item.SellIn);
+        Assert.Equal(9, item.Quality);
     }
 
     [Fact]
     public void ArticleNormalSellInNegatif()
     {
-        IList<Item> Items = new List<Item> { new Item { Name = "foo", SellIn = 0, Quality = 10 } };
-        GildedRose app = new GildedRose(Items);
+        var (app, item) = InitAppTestAvecUnItem("foo", 0, 10);
+
 
         app.UpdateQuality();
 
-        Assert.Equal(-1, Items[0].SellIn);
-        Assert.Equal(8, Items[0].Quality);
+        Assert.Equal(-1, item.SellIn);
+        Assert.Equal(8, item.Quality);
     }
 
     [Fact]
     public void ArticleNormalQualiteZero()
     {
-        IList<Item> Items = new List<Item> { new Item { Name = "foo", SellIn = 1, Quality = 0 } };
-        GildedRose app = new GildedRose(Items);
+        var (app, item) = InitAppTestAvecUnItem("foo", 1, 0);
 
         app.UpdateQuality();
 
-        Assert.Equal(0, Items[0].SellIn);
-        Assert.Equal(0, Items[0].Quality);
+        Assert.Equal(0, item.SellIn);
+        Assert.Equal(0, item.Quality);
     }
 
     //Aged Brie : sellin = 0, quality = 10 => après update : sellin = -1, quality = 12 si expiré sinon quality = 11
@@ -74,14 +83,13 @@ public class GildedRoseTest
     [InlineData(0, 50, -1, 50)]
     public void AgedBrie(int sellIn, int quality, int sellInAttendu, int qualityAttendu)
     {
-        IList<Item> Items = new List<Item> { new Item { Name = "Aged Brie", SellIn = sellIn, Quality = quality } };
-        GildedRose app = new GildedRose(Items);
-        
+        var (app, item) = InitAppTestAvecUnItem(AgedBrieConst, sellIn, quality);
+
         app.UpdateQuality();
 
-        Assert.Equal(sellInAttendu, Items[0].SellIn);
-        Assert.Equal(qualityAttendu, Items[0].Quality);
-        Assert.InRange(Items[0].Quality, 0, 50);
+        Assert.Equal(sellInAttendu, item.SellIn);
+        Assert.Equal(qualityAttendu, item.Quality);
+        Assert.InRange(item.Quality, 0, 50);
     }
 
     [Theory]
@@ -90,17 +98,26 @@ public class GildedRoseTest
     [InlineData(10, 80)]
     public void Sulfuras(int sellIn, int quality)
     {
-        IList<Item> Items = new List<Item> { new Item { Name = "Sulfuras, Hand of Ragnaros", SellIn = sellIn, Quality = quality } };
-        GildedRose app = new GildedRose(Items);
-        
+        //IList<Item> Items = new List<Item> { new Item { Name = SulfurasConst, SellIn = sellIn, Quality = quality } };
+        var (app, item) = InitAppTestAvecUnItem(SulfurasConst, sellIn, quality);
+
         app.UpdateQuality();
 
-        Assert.Equal(sellIn, Items[0].SellIn);
-        Assert.Equal(quality, Items[0].Quality);
-        Assert.Equal(80, Items[0].Quality);
+        Assert.Equal(sellIn, item.SellIn);
+        Assert.Equal(quality, item.Quality);
+        Assert.Equal(80, item.Quality);
     }
 
 
+    public void BackstagePasses()
+    {
+        //TODO
+    }
+
+    public void Conjured()
+    {
+        //TODO
+    }
 
 
 
