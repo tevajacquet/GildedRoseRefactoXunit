@@ -109,9 +109,28 @@ public class GildedRoseTest
     }
 
 
-    public void BackstagePasses()
+    //Cas 5 : Backstage passes augmente de 1 la qualité si sellin > 10, de 2 si 6 <= sellin <= 10, de 3 si 1 <= sellin <= 5 et tombe à 0 si sellin <= 0
+    [Theory]
+    [InlineData(11, 20, 10, 21)]
+    [InlineData(15, 49, 14, 50)] // max 50
+    [InlineData(15, 50, 14, 50)] // max 50
+
+    [InlineData(10, 20, 9, 22)]
+    [InlineData(6, 20, 5, 22)]
+
+    [InlineData(5, 20, 4, 23)]
+    [InlineData(1, 20, 0, 23)]
+
+    [InlineData(0, 20, -1, 0)]
+    public void BackstagePasses(int sellIn, int quality, int sellInAttendu, int qualityAttendu)
     {
-        //TODO
+        var (app, item) = InitAppTestAvecUnItem(BackStageConst, sellIn, quality);
+
+        app.UpdateQuality();
+
+        Assert.Equal(sellInAttendu, item.SellIn);
+        Assert.Equal(qualityAttendu, item.Quality);
+        Assert.InRange(item.Quality, 0, 50);
     }
 
     public void Conjured()
